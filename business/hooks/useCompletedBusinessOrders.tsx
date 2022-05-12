@@ -8,7 +8,7 @@ export const useCompletedBusinessOrders = (businessId?: string, ordering?: Query
   const api = React.useContext(ApiContext);
   // state
   // state
-  const [orders, setOrders] = React.useState<WithId<Order>[]>([]);
+  const [orders, setOrders] = React.useState<WithId<Order>[]>();
   // side effects
   React.useEffect(() => {
     if (!businessId) return;

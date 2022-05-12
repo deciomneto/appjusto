@@ -18,7 +18,7 @@ interface Props {
 interface ContextProps {
   businessId: string | undefined | null;
   business: WithId<Business> | undefined;
-  orders: WithId<Order>[];
+  orders: WithId<Order>[] | undefined;
   activeChats: GroupedChatMessages[][];
   completedOrdersChats: GroupedChatMessages[][];
   allChats: GroupedChatMessages[][];
@@ -40,13 +40,15 @@ export const BusinessAppProvider = ({ children }: Props) => {
   const businesses = useBusinessesManagedBy();
   const [businessId, setBusinessId] = React.useState<string | undefined | null>();
   const [business, setBusiness] = React.useState<WithId<Business>>();
-  const [orders, setOrders] = React.useState<WithId<Order>[]>([]);
-  const activeOrders = useObserveBusinessOrders(business?.id, activeStatuses);
-  const completedOrders = useCompletedBusinessOrders(business?.id);
+  const [orders, setOrders] = React.useState<WithId<Order>[]>();
+  const [activeOrders, setActiveOrders] = React.useState<WithId<Order>[]>();
+  const [completedOrders, setCompletedOrders] = React.useState<WithId<Order>[]>();
   const activeChats = useBusinessChats(business?.id, activeOrders);
   const completedOrdersChats = useBusinessChats(business?.id, completedOrders);
   const [allChats, setAllChats] = React.useState<GroupedChatMessages[][]>([]);
   const [unreadCount, setUnreadCount] = React.useState(0);
+  const actOrders = useObserveBusinessOrders(business?.id, activeStatuses);
+  const compOrders = useCompletedBusinessOrders(business?.id);
 
   // helpers
   const getBusinessIdFromBusinesses = React.useCallback(() => {
@@ -74,7 +76,16 @@ export const BusinessAppProvider = ({ children }: Props) => {
   }, [user?.email, businessId, getBusinessIdFromBusinesses]);
 
   React.useEffect(() => {
-    setOrders([...activeOrders, ...completedOrders]);
+    if (actOrders !== undefined) setActiveOrders([...actOrders]);
+  }, [actOrders]);
+
+  React.useEffect(() => {
+    if (compOrders !== undefined) setCompletedOrders([...compOrders]);
+  }, [compOrders]);
+
+  React.useEffect(() => {
+    if (activeOrders) setOrders((prevOrders) => [...prevOrders, ...activeOrders]);
+    if (completedOrders) setOrders((prevOrders) => [...prevOrders, ...completedOrders]);
   }, [activeOrders, completedOrders]);
 
   React.useEffect(() => {

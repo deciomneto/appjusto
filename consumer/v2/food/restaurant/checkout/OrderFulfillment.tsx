@@ -85,7 +85,7 @@ export const OrderFulfillment = ({ handleChange }: OrderFulfillmentProps) => {
               }}
             >
               <SliderButton
-                title={fulfillment === 'delivery' ? 'Retirar' : 'Entregar'}
+                title={fulfillment === 'delivery' ? 'Entregar' : 'Retirar'}
                 style={{ height: trackHeight, width: '81%', borderRadius: 30 }}
                 // activityIndicator={confirmed}
                 buttonColor="#B8E994"

@@ -27,6 +27,7 @@ import { LoggedNavigatorParamList } from '../../../types';
 import { FoodOrderNavigatorParamList } from '../../types';
 import { RestaurantNavigatorParamList } from '../types';
 import { DestinationModal } from './DestinationModal';
+import { Fulfillment, OrderFulfillment } from './OrderFulfillment';
 
 type ScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<RestaurantNavigatorParamList, 'FoodOrderCheckout'>,
@@ -134,6 +135,11 @@ export const FoodOrderCheckout = ({ navigation, route }: Props) => {
   // tracking
   useSegmentScreen('FoodOrderCheckout');
   // handlers
+  const handleFulfillment = (fulfillment: Fulfillment) => {
+    if (!order?.id) return;
+    // @ts-ignore
+    api.order().updateOrder(order.id, { fulfillment });
+  };
   const placeOrderHandler = async () => {
     Keyboard.dismiss();
     if (!order) return;
@@ -268,6 +274,7 @@ export const FoodOrderCheckout = ({ navigation, route }: Props) => {
           setShareDataWithBusiness(!shareDataWithBusiness);
           track('consumer changed share data with business preferences');
         }}
+        fulfillment={<OrderFulfillment handleChange={handleFulfillment} />}
         availableFleets={
           <OrderAvailableFleets
             quotes={quotes}

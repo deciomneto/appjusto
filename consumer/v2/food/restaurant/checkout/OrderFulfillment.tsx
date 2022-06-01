@@ -27,7 +27,6 @@ export const OrderFulfillment = ({ fulfillment, handleChange }: OrderFulfillment
   const [translateX, setTranslateX] = React.useState(0);
   // UI handlers
   const onGestureEvent = (event: GestureEvent<PanGestureHandlerEventPayload>) => {
-    // if (confirmed) return;
     const { translationX } = event.nativeEvent;
     if (translationX >= leftmost && translationX <= rightmost) setTranslateX(translationX);
   };

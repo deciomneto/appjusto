@@ -278,7 +278,7 @@ export const FoodOrderCheckout = ({ navigation, route }: Props) => {
           setShareDataWithBusiness(!shareDataWithBusiness);
           track('consumer changed share data with business preferences');
         }}
-        fulfillment={<OrderFulfillment handleChange={setFulfillment} />}
+        fulfillment={<OrderFulfillment fulfillment={fulfillment} handleChange={setFulfillment} />}
         availableFleets={
           <OrderAvailableFleets
             quotes={quotes}

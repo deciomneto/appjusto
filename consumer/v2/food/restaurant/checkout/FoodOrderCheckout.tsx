@@ -70,6 +70,7 @@ export const FoodOrderCheckout = ({ navigation, route }: Props) => {
     order?.destination?.additionalInfo ?? ''
   );
   const [addressComplement, setAddressComplement] = React.useState<boolean>(true);
+  const [fulfillment, setFulfillment] = React.useState<Fulfillment>('delivery');
   const canSubmit =
     selectedPaymentMethodId !== undefined &&
     selectedFare !== undefined &&
@@ -132,14 +133,17 @@ export const FoodOrderCheckout = ({ navigation, route }: Props) => {
       navigation.navigate('MainNavigator', { screen: 'Home' });
     }
   }, [order, navigation]);
+  React.useEffect(() => {
+    // @ts-ignore
+    if (order.fulfillment !== fulfillment) {
+      // @ts-ignore
+      api.order().updateOrder(order.id, { fulfillment });
+    }
+    // @ts-ignore
+  }, [order.fulfilment, fulfillment]);
   // tracking
   useSegmentScreen('FoodOrderCheckout');
   // handlers
-  const handleFulfillment = (fulfillment: Fulfillment) => {
-    if (!order?.id) return;
-    // @ts-ignore
-    api.order().updateOrder(order.id, { fulfillment });
-  };
   const placeOrderHandler = async () => {
     Keyboard.dismiss();
     if (!order) return;
@@ -274,7 +278,7 @@ export const FoodOrderCheckout = ({ navigation, route }: Props) => {
           setShareDataWithBusiness(!shareDataWithBusiness);
           track('consumer changed share data with business preferences');
         }}
-        fulfillment={<OrderFulfillment handleChange={handleFulfillment} />}
+        fulfillment={<OrderFulfillment handleChange={setFulfillment} />}
         availableFleets={
           <OrderAvailableFleets
             quotes={quotes}

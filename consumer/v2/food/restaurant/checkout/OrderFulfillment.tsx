@@ -10,6 +10,7 @@ import SliderButton from '../../../../../courier/approved/ongoing/SliderButton';
 export type Fulfillment = 'delivery' | 'take-away';
 
 interface OrderFulfillmentProps {
+  fulfillment: Fulfillment;
   handleChange: (value: Fulfillment) => void;
 }
 
@@ -21,10 +22,9 @@ const leftmost = 0;
 const rightmost = width - thumbWidth;
 const threshold = 30;
 
-export const OrderFulfillment = ({ handleChange }: OrderFulfillmentProps) => {
+export const OrderFulfillment = ({ fulfillment, handleChange }: OrderFulfillmentProps) => {
   // state
   const [translateX, setTranslateX] = React.useState(0);
-  const [fulfillment, setFulfillment] = React.useState<Fulfillment>('delivery');
   // UI handlers
   const onGestureEvent = (event: GestureEvent<PanGestureHandlerEventPayload>) => {
     // if (confirmed) return;
@@ -35,11 +35,9 @@ export const OrderFulfillment = ({ handleChange }: OrderFulfillmentProps) => {
     const shouldConfirm = translateX > 0 && rightmost - translateX < threshold;
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     if (shouldConfirm) {
-      setFulfillment('take-away');
       setTranslateX(rightmost);
       handleChange('take-away');
     } else {
-      setFulfillment('delivery');
       handleChange('delivery');
       setTranslateX(0);
     }
